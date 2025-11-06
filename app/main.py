@@ -1,15 +1,18 @@
 from fastapi import FastAPI
 from app.db import Base, engine
+from app.models import *
+from app.routers import receipts, customers, products
+
 
 app = FastAPI(title="Sales Receipt Backend")
 
-# Just ensure DB engine can connect
-try:
-    Base.metadata.create_all(bind=engine)
-    print("✅ Database connected successfully")
-except Exception as e:
-    print("❌ Database connection failed:", e)
+# create tables
+Base.metadata.create_all(bind=engine)
+
+app.include_router(receipts.router)
+app.include_router(customers.router)
+app.include_router(products.router)
 
 @app.get("/healthcheck")
 def healthcheck():
-    return {"status": "ok", "message": "Backend is running successfully!"}
+    return {"status": "ok", "message": "Backend + DB running successfully"}
