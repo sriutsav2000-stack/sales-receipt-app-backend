@@ -31,6 +31,8 @@ class Receipt(Base):
     amount = Column(Float, nullable=False)
     advance_received = Column(Float, nullable=False)
     total_due = Column(Float, nullable=False)
+    due_date = Column(Date, nullable = True)
+    status = Column(String, nullable = False)
 
     customer_id = Column(Integer, ForeignKey("customers.id"))
     product_id = Column(Integer, ForeignKey("products.id"))

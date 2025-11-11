@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db import SessionLocal
 from app.models import Product
+from app.schemas import ProductCreate
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -14,15 +15,16 @@ def get_db():
 
 
 @router.post("/")
-def create_product(name: str, price: float, db: Session = Depends(get_db)):
-    existing = db.query(Product).filter(Product.name == name).first()
-    if existing:
-        raise HTTPException(status_code=400, detail="Product already exists")
-    new_product = Product(name=name, price=price)
+def create_product(product: ProductCreate, db: Session = Depends(get_db)):
+    new_product = Product(
+        name=product.name,
+        price=product.price
+    )
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
-    return {"message": "Product created", "id": new_product.id}
+    return {"message": "Product created successfully", "id": new_product.id}
+
 
 
 @router.get("/")

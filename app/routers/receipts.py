@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import date
 from app.db import SessionLocal
 from app.models import Receipt
+from app.schemas import ReceiptCreate
 
 router = APIRouter(prefix="/receipts", tags=["Receipts"])
 
@@ -14,24 +15,18 @@ def get_db():
         db.close()
 
 @router.post("/")
-def create_receipt(
-    date: date,
-    customer_id: int,
-    product_id: int,
-    quantity: int,
-    amount: float,
-    advance_received: float,
-    db: Session = Depends(get_db)
-):
-    total_due = (amount * quantity) - advance_received
+def create_receipt(receipt: ReceiptCreate, db: Session = Depends(get_db)):
+    total_due = (receipt.amount * receipt.quantity) - receipt.advance_received
     new_receipt = Receipt(
-        date=date,
-        customer_id=customer_id,
-        product_id=product_id,
-        quantity=quantity,
-        amount=amount,
-        advance_received=advance_received,
-        total_due=total_due
+        date=receipt.date,
+        customer_id=receipt.customer_id,
+        product_id=receipt.product_id,
+        quantity=receipt.quantity,
+        amount=receipt.amount,
+        advance_received=receipt.advance_received,
+        total_due=total_due,
+        due_date= receipt.due_date,
+        status= receipt.status
     )
     db.add(new_receipt)
     db.commit()
