@@ -14,7 +14,7 @@ def get_db():
     finally:
         db.close()
 
-# KEEP YOUR EXISTING ENDPOINT FOR SINGLE PRODUCT
+# KEEP YOUR EXISTING ENDPOINT FOR SINGLE PRODUCTS
 @router.post("/")
 def create_receipt(receipt: ReceiptCreate, db: Session = Depends(get_db)):
     total_due = (receipt.amount * receipt.quantity) - receipt.advance_received
