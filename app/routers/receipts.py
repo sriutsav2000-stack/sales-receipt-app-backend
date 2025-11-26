@@ -64,7 +64,7 @@ def create_receipt_with_items(receipt: ReceiptWithItemsCreate, db: Session = Dep
     
     return {"message": "Receipts created successfully", "ids": receipt_ids}
 
-# KEEP YOUR EXISTING GET ENDPOINT
+# KEEP YOUR EXISTING GET ENDPOINT .mlklkknk
 @router.get("/")
 def get_receipts(db: Session = Depends(get_db)):
     return db.query(Receipt).all()
