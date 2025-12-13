@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
 from sqlalchemy.orm import relationship
-from app.db import Base
+from app.database import Base
 
 class Customer(Base):
     __tablename__ = "customers"
@@ -33,6 +33,8 @@ class Receipt(Base):
     total_due = Column(Float, nullable=False)
     due_date = Column(Date, nullable = True)
     status = Column(String, nullable = False)
+    receipt_image = Column(String, nullable=True)
+
 
     customer_id = Column(Integer, ForeignKey("customers.id"))
     product_id = Column(Integer, ForeignKey("products.id"))

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.db import Base, engine
+from app.database import Base, engine
 from app.models import *
-from app.routers import receipts, customers, products, dashboard
+from app.routers import receipts, customers, products, dashboard, upload
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Sales Receipt Backend")
@@ -26,6 +26,7 @@ app.include_router(receipts.router)
 app.include_router(customers.router)
 app.include_router(products.router)
 app.include_router(dashboard.router)
+app.include_router(upload.router)
 
 @app.get("/healthcheck")
 def healthcheck():

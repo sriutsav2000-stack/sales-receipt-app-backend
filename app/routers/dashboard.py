@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from app.db import SessionLocal
+from app.database import SessionLocal
 from app.models import Customer, Receipt
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
