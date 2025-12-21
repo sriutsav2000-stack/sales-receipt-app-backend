@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, DateTime
+from datetime import datetime
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -8,6 +9,8 @@ class Customer(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
     contact = Column(String, nullable=True)
+    # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
 
     receipts = relationship("Receipt", back_populates="customer")
 
@@ -18,6 +21,8 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     price = Column(Float, nullable=False)
+    # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
 
     receipts = relationship("Receipt", back_populates="product")
 
@@ -34,6 +39,8 @@ class Receipt(Base):
     due_date = Column(Date, nullable = True)
     status = Column(String, nullable = False)
     receipt_image = Column(String, nullable=True)
+    # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
 
 
     customer_id = Column(Integer, ForeignKey("customers.id"))
@@ -41,3 +48,11 @@ class Receipt(Base):
 
     customer = relationship("Customer", back_populates="receipts")
     product = relationship("Product", back_populates="receipts")
+
+# class User(Base):
+#     __tablename__ = "users"
+
+#     id = Column(Integer, primary_key=True, index=True)
+#     email = Column(String, unique=True, index=True, nullable=False)
+#     hashed_password = Column(String, nullable=False)
+#     created_at = Column(DateTime, default=datetime.utcnow)

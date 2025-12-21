@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from datetime import date
+import datetime
 from typing import List, Optional
 
 # Keep your existing schemas exactly as they are
 class ReceiptCreate(BaseModel):
-    due_date: date
-    date: date
+    due_date: datetime.date
+    date: datetime.date
     customer_id: int
     product_id: int
     quantity: int
@@ -23,10 +23,20 @@ class ProductCreate(BaseModel):
 
 # ADD THIS NEW SCHEMA FOR MULTIPLE ITEMS
 class ReceiptWithItemsCreate(BaseModel):
-    due_date: date
-    date: date
+    due_date: datetime.date
+    date: datetime.date
     customer_id: int
     items: List[dict]  # This matches your frontend structure
     amount: float
     advance_received: float
     status: str
+
+class ReceiptUpdate(BaseModel):
+    date: Optional[datetime.date] = None
+    due_date: Optional[datetime.date] = None
+    quantity: Optional[int] = None
+    amount: Optional[float] = None
+    advance_received: Optional[float] = None
+    status: Optional[str] = None
+    customer_id: Optional[int] = None
+    product_id: Optional[int] = None
