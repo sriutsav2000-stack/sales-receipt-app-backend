@@ -1,15 +1,10 @@
 from fastapi import FastAPI
 from app.database import Base, engine
 from app.models import *
-from app.routers import receipts, customers, products, dashboard, upload
+from app.routers import receipts, customers, products, dashboard, upload, auth
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Sales Receipt Backend")
-
-# origins = [
-#     "http://localhost:8100",
-#     "http://127.0.0.1:8100"
-# ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,9 +14,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# create tables
+# Create all tables
 Base.metadata.create_all(bind=engine)
 
+# Register routers
+app.include_router(auth.router)
 app.include_router(receipts.router)
 app.include_router(customers.router)
 app.include_router(products.router)

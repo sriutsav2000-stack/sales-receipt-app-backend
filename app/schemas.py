@@ -40,3 +40,16 @@ class ReceiptUpdate(BaseModel):
     status: Optional[str] = None
     customer_id: Optional[int] = None
     product_id: Optional[int] = None
+
+class RegisterRequest(BaseModel):
+    name: str
+    email: Optional[str] = None
+    mobile: Optional[str] = None
+
+class LoginRequest(BaseModel):
+    email: Optional[str] = None
+    mobile: Optional[str] = None
+
+class OtpVerifyRequest(BaseModel):
+    user_id: int
+    otp: str

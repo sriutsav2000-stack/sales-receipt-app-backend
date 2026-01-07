@@ -1,26 +1,18 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from app.database import SessionLocal
+
+from app.database import get_db
 from app.models import Customer, Receipt
+from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 @router.get("/top-customers")
-def get_top_customers(db: Session = Depends(get_db)):
-    """
-    Returns top 5 customers by total due (sum of all receipts per customer).
-    A customer may have multiple receipts — all are aggregated.
-    """
-
+def get_top_customers(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
     results = (
         db.query(
             Customer.id.label("customer_id"),
@@ -28,6 +20,7 @@ def get_top_customers(db: Session = Depends(get_db)):
             func.sum(Receipt.total_due).label("total_due")
         )
         .join(Receipt, Receipt.customer_id == Customer.id)
+        .filter(Customer.user_id == user_id, Receipt.user_id == user_id)
         .group_by(Customer.id, Customer.name)
         .order_by(func.sum(Receipt.total_due).desc())
         .limit(5)
@@ -45,12 +38,10 @@ def get_top_customers(db: Session = Depends(get_db)):
 
 
 @router.get("/")
-def dashboard_overview(db: Session = Depends(get_db)):
-    """
-    Main dashboard endpoint.
-    Currently returns: top 5 customers by total due.
-    """
-
+def dashboard_overview(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
     top_customers = (
         db.query(
             Customer.id.label("customer_id"),
@@ -58,6 +49,7 @@ def dashboard_overview(db: Session = Depends(get_db)):
             func.sum(Receipt.total_due).label("total_due")
         )
         .join(Receipt, Receipt.customer_id == Customer.id)
+        .filter(Customer.user_id == user_id, Receipt.user_id == user_id)
         .group_by(Customer.id, Customer.name)
         .order_by(func.sum(Receipt.total_due).desc())
         .limit(5)
